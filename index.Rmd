@@ -7,15 +7,99 @@ output:
     self_contained: false
 ---
 
+##Research Question
+How does the population's confidence in the government change as the inflation and unemployment rates change?
+
+##Data 
+The dataset I used for this project was merger from two distinct sources. The first is from the General Social Survey, which is a survey that collects information and keeps a historical record of the concerns, experiences, attitudes, and practices of residents of the United States. The second is from the Federal Reserve Economic Data, which is a database maintained by the Research division of the Federal Reserve Bank of St. Louis. 
+
+##Setup
+```{r setup, include = FALSE}
+options(width = 100)
+library(tidyverse)
+library(infer)
+library(broom)
+```
+
+##Importing Data
+```{r importing_data}
+
+confidence <- read_csv("Data/GOV50-FinalProject-Data-GSS-csv-prep.csv")
+
+inflation <- read_csv("Data/Inflation-FRED-Jan01.csv")
+
+```
+##Data Cleanup
+1. I removed the years that didn't contain data. 
+2. I renamed a variable in the inflation dataset
+3. I converted the confidence variables that had a character data type into a numerical data type using a 3-point Likert scale ( 1 = HARDLY ANY, 2 = ONLY SOME and 3 = A GREAT DEAL). 
+
+```{r data_cleanup}
+
+confidence <- confidence |>
+  filter(!year %in% c(1972,1985))
+
+inflation <- inflation |>
+  filter(!year  %in% c(1960:1972)) |>
+  rename(perc_inflation = inflation_cpi)
+
+```
+
+##Join Datasets
+```{r join_datasets}
+
+conf_infl <- confidence |>
+  inner_join(inflation, by = "year")
+```
+
+##"Decompose" confed variable
+```{r decompose_confed}
+
+conf_infl <- conf_infl |>
+  mutate(confed_nb = case_when(
+            confed == "HARDLY ANY" ~ 1,
+            confed == "ONLY SOME" ~ 2,
+            confed == "A GREAT DEAL" ~ 3
+  )) 
+
+```
+
+##Plotting inflation over time
+```{r plotting_inflation}
+
+ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) + 
+  geom_line() + 
+  labs(title = "US Inflation Over Time", x = "Year", y = "Inflation (%)", subtitle = "From 1973 to 2021")
+
+```
+
+####Table with the count of each confed level over time
+
+```{r table_count_confed}
+
+confed_count <- conf_infl |>
+  group_by(year, confed_nb) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = confed_nb , values_from = count)
+
+knitr::kable(confed_count, col.names = c("Year", "Hardly Any", "Only Some", "A Great Deal", "Other"))
+
+```
+
+##Work in Progress..
+``` {r work_in_progress}
+##Graph that visualized the table with the count of each confed answer
+confed_count2 <- conf_infl |>
+  group_by(year, confed_nb) |>
+  summarize(count = n())
 
 
-## Project thoughts
 
-I am interested in exploring data related to payday loans. Indeed, I would like to look at the number of payday loan businessese in a neighbourhood and a neighbourhood's wealth. I would ideally like to be able to create a model, where the number of payday loan businesses in a certain area is a predictor for the median income for that neighbourhood.
+```
 
-This topic is motivated by my walks to work this summer.I would pass by the same 2-3 payday loan businesses everyday and it got me thinking about how low of a median income does a neighbourhood need to have before its residents require payday loans to get by. Expanding this idea further, I could also look into foreign exchange counters, and how they are a predictor of median income, or the immigrant population of an area. 
 
-##Project Proposal
+##Notes to self for later writeup 
+An important caveat of my analysis is the fact that the GSS doesn't have the survey respondents' state of residence. Due to this, I was forced to aggregate all the survey responses as being data from the United States as a whole; I was not able to take into account regional differences. This could've impacted my analysis.
 
-How does the population's confidence in the government in power change as the inflation and unemployment rates change?I believe that the population will have lower confidence in the government if the inflation and unemployment rates are high. However, I also think that the effect of the inflation and unemployment rates on government confidence is small. This makes intuitive sense because inflation and unemployment directly impact the population; thus, individuals "have a reason" to be frustrated towards the government that let the situation get to where it is (high inflation and/or high unemployment). Additionally, I think that other macro factors influence government confidence; inflation and unemployment can't be the only ones, which is why I hypothesize that the effect is small. I hope to merge two datasets to conduct this analysis; the first from FRED, and the second from Pew Research Center. My explanatory variables would be the inflation rate and the unemployment rate over time (measured as a percentage, or rather a decimal number). I would conduct an analysis for each explanatory variable, so these two explanatory variables are independent of one another. My outcome variable is the confidence in the government, which is measured on a scale from 1 to 100. The population's confidence in the government is based on the confidence that a sample (subset of the population) has in the government. The pattern in the data that would provide support to my hypothesis is one where for high inflation and unemployment rates, the population's confidence in the government is low. Relatedly, for low inflation and a low unemployment rate, the population's confidence in the government would be high. Any pattern opposite to the one described in the previous two sentences would disprove my hypothesis. 
+I also acknowledge that there are differences in inflation rates across the country, but due to lack of geographic in the GSS data, I was not able to take the regional differences in inflation into account. This could've impacted my analysis.
 
