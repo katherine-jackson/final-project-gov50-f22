@@ -73,8 +73,7 @@ ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) +
 
 ```
 
-####Table with the count of each confed level over time
-
+####Table with the count of each confed level over time (by year)
 ```{r table_count_confed}
 
 confed_count <- conf_infl |>
@@ -86,20 +85,52 @@ knitr::kable(confed_count, col.names = c("Year", "Hardly Any", "Only Some", "A G
 
 ```
 
-##Work in Progress..
+## Table with the means of each confed level over time (by year) + graph
+##Add range for the y axis from 1 to 3
 ``` {r work_in_progress}
-##Graph that visualized the table with the count of each confed answer
-confed_count2 <- conf_infl |>
-  group_by(year, confed_nb) |>
-  summarize(count = n())
 
+confed_mean_table <- conf_infl |>
+  group_by(year) |>
+  summarize(confed_mean = mean(confed_nb, na.rm = TRUE))
+confed_mean_table
 
+knitr::kable(confed_mean_table, col.names = c("Year", "Confidence in Exec Branch of Fed Government"))
+
+confed_mean_table |>
+  ggplot(mapping = aes(x = year, y = confed_mean)) +
+  geom_line() + 
+  labs(title = "Confidence in the Executive Branch of the Federal Government Over Time", x = "Year", y = "Confidence", subtitle = "From 1973 to 2021")
 
 ```
 
+##Plotting regression (explanatory: inflation)
+```{r regression}
+
+##Regression of inflation and confidence in the executive branch of the federal government. 
+confed_infl_mean <- conf_infl |> 
+  group_by(year) |> 
+  summarize(confed_mean = mean(confed_nb, na.rm = TRUE), 
+            mean_infl = mean(perc_inflation, na.rm = TRUE)) |> 
+ggplot(mapping = aes(x = mean_infl, y = confed_mean, label = year)) + 
+  geom_point() +
+  geom_text(check_overlap = TRUE, hjust = 0, nudge_x = 0.1) +
+  geom_smooth(method = "lm", se = FALSE, color = "indianred1", formula = y ~ x + I(x^2)) + 
+  xlim(0,15) + 
+  labs(x = "Inflation (%)", y = "Confidence", title = "Inflation and Confidence in the Executive Branch of the Federal Government",  subtitle = "From 1973 to 2021")
+confed_infl_mean 
+
+```
+##Analysis
+In plotting these two variables, I played around with different types of regression. While I found a slight positive correlation between inflation and confidence in the executive branch of the federal government with a linear regression, I think my data points are best mapped to a quadratic regression, unless I can prove them to be outliers - analyzing these possible outliers is one of my next steps. The above quadratic regression suggests that government confidence rises with inflation, up to about 6% in inflation, and then falls as inflation continues to rise. This does not align with my original hypothesis. 
 
 ##Notes to self for later writeup 
 An important caveat of my analysis is the fact that the GSS doesn't have the survey respondents' state of residence. Due to this, I was forced to aggregate all the survey responses as being data from the United States as a whole; I was not able to take into account regional differences. This could've impacted my analysis.
 
 I also acknowledge that there are differences in inflation rates across the country, but due to lack of geographic in the GSS data, I was not able to take the regional differences in inflation into account. This could've impacted my analysis.
+
+With the prevalent current discussion about inflation, I was interested in looking at how inflation impacted people's confidence in the government.There are many other variables that impact government confidence.
+
+Snipets of history that can also explain low government confidence and/or high inflation: 
+
+"The impact of the 1973 oil crisis, reduced U.S. expenditure and the resignation of Richard Nixon in the wake of the Watergate scandal undermined the South Vietnamese economy and U.S. support for South Vietnam."
 
