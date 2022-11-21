@@ -6,19 +6,28 @@ output:
   distill::distill_article:
     self_contained: false
 ---
+##Final report
+Introduction: This data analysis project sought to answer the following question: How does the US population's confidence in the executive branch of the federal government change as the inflation rate change? In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis was based on the fact that high rates of inflation are not desirable
+
+
+In a time where inflation in the United States is above average levels, this research question is matters because it is important to understand the on confidence. Especially because presidential elections are in 2024, the current (2022) inflation crisis will have characterized 
+
+introduction where you introduce the research question and hypothesis and briefly describe why it is interesting; 
 
 ##Research Question
-How does the population's confidence in the government change as the inflation and unemployment rates change?
+How does the population's confidence in the government change as the inflation rate change?
 
 ##Data 
 The dataset I used for this project was merger from two distinct sources. The first is from the General Social Survey, which is a survey that collects information and keeps a historical record of the concerns, experiences, attitudes, and practices of residents of the United States. The second is from the Federal Reserve Economic Data, which is a database maintained by the Research division of the Federal Reserve Bank of St. Louis. 
 
 ##Setup
 ```{r setup, include = FALSE}
+
 options(width = 100)
 library(tidyverse)
 library(infer)
 library(broom)
+
 ```
 
 ##Importing Data
@@ -74,7 +83,7 @@ ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) +
 ```
 
 ####Table with the count of each confed level over time (by year)
-```{r table_count_confed}
+{r table_count_confed}
 
 confed_count <- conf_infl |>
   group_by(year, confed_nb) |>
@@ -83,7 +92,6 @@ confed_count <- conf_infl |>
 
 knitr::kable(confed_count, col.names = c("Year", "Hardly Any", "Only Some", "A Great Deal", "Other"))
 
-```
 
 ## Table with the means of each confed level over time (by year) + graph
 ##Add range for the y axis from 1 to 3
@@ -102,24 +110,39 @@ confed_mean_table |>
   labs(title = "Confidence in the Executive Branch of the Federal Government Over Time", x = "Year", y = "Confidence", subtitle = "From 1973 to 2021")
 
 ```
-
-##Plotting regression (explanatory: inflation)
+## Main regression
 ```{r regression}
 
 ##Regression of inflation and confidence in the executive branch of the federal government. 
 confed_infl_mean <- conf_infl |> 
   group_by(year) |> 
   summarize(confed_mean = mean(confed_nb, na.rm = TRUE), 
-            mean_infl = mean(perc_inflation, na.rm = TRUE)) |> 
-ggplot(mapping = aes(x = mean_infl, y = confed_mean, label = year)) + 
+            mean_infl = mean(perc_inflation, na.rm = TRUE))
+confed_infl_mean
+
+graph <- ggplot(data = confed_infl_mean, mapping = aes(x = mean_infl, y = confed_mean, label = year)) +
   geom_point() +
   geom_text(check_overlap = TRUE, hjust = 0, nudge_x = 0.1) +
-  geom_smooth(method = "lm", se = FALSE, color = "indianred1", formula = y ~ x + I(x^2)) + 
-  xlim(0,15) + 
+  geom_smooth(method = "lm", se = FALSE, color = "blue1") + 
   labs(x = "Inflation (%)", y = "Confidence", title = "Inflation and Confidence in the Executive Branch of the Federal Government",  subtitle = "From 1973 to 2021")
-confed_infl_mean 
+graph
+
+##OLS Regression
+fit <- lm(confed_mean ~ mean_infl, data = confed_infl_mean)
+knitr::kable(fit) 
+
+fit_controlyear <- lm(confed_mean ~ mean_infl + year, data = confed_infl_mean)
+knitr::kable(fit_controlyear)
 
 ```
+
+##Additional regression
+```{r}
+
+```
+
+
+
 ##Analysis
 In plotting these two variables, I played around with different types of regression. While I found a slight positive correlation between inflation and confidence in the executive branch of the federal government with a linear regression, I think my data points are best mapped to a quadratic regression, unless I can prove them to be outliers - analyzing these possible outliers is one of my next steps. The above quadratic regression suggests that government confidence rises with inflation, up to about 6% in inflation, and then falls as inflation continues to rise. This does not align with my original hypothesis. 
 
