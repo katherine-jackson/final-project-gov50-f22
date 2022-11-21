@@ -18,15 +18,33 @@ Why is this research question interesting?
 This research question is interesting because we are currently in 2022, a time where inflation in the United States is at very high levels, when compared to historical levels. The dataset that I used from the FRED - more on the dataset below - does not include levels of inflation for 2022, but I still believe this research question is important because a government's response (or lack thereof) to inflation could have major consequences on many aspects of society, including confidence, voting patterns, etc. 
 
 ##Final Report: Data
-a data section that briefly describes the data source, describes how the key dependent and independent variables are measured (e.g., a survey, statistical model, or expert coding), and also produces a plot that summarizes the dependent variable;
+Instructions: A data section that briefly describes the data source, describes how the key dependent and independent variables are measured (e.g., a survey, statistical model, or expert coding), and also produces a plot that summarizes the dependent variable.
 
-I used two data sources for this project which I ultimately merged together based on year. The first is the General Social Survey (GSS) which gave me my outcome variable, and the second is the "Inflation, consumer prices for the United States" from the FRED which gave me my explanatory variable. The GSS data is from a 
+Description of the Data Source
+I used two data sources for this project which I ultimately merged together using the year. The first is the General Social Survey (GSS) which was the source of my dependent variable, and the second is the "Inflation, consumer prices for the United States" from the World Bank, but which I retrieved from the FRED, which was the source of my independent variable.
 
-The in
+More specifically, the GSS data is from a 
 
-My explanatory variables would be the inflation rate.
+As for the FRED data, I 
 
-My outcome variable is the confidence in the government, which is measured on a scale of 1 to 3.
+Independent Variable
+My independent variable is the inflation rate. In the data downloaded from the FRED, this represents the inflation_cpi variable and it is coded in the following way: 1 percent = 1.00 and 6 percent = 6.00. The data was originally released by World Bank, and as indicated by this international organization, "inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at specified intervals, such as yearly. The Laspeyres formula is generally used."
+
+Dependent Variable
+My dependent variable is the confidence in the executive branch of the federal government. In the GSS, this represents the confed variable and it is mostly coded as HARDLY ANY, ONLY SOME, and A GREAT DEAL. The data is measured via a survey, the GSS. 
+
+**CHECK THIS**
+Research Design
+The research design is cross-sectional. 
+
+**PLOT**
+Plot that summarizes the dependent variable;
+
+##Final Report: Results
+Instructions: A results section that contains a scatterplot, barplot, or boxplot of the main relationship of interest and output for the main regression of interest. For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.
+
+
+
 
 
 ##Research Question
@@ -54,10 +72,6 @@ inflation <- read_csv("Data/Inflation-FRED-Jan01.csv")
 
 ```
 ##Data Cleanup
-1. I removed the years that didn't contain data. 
-2. I renamed a variable in the inflation dataset
-3. I converted the confidence variables that had a character data type into a numerical data type using a 3-point Likert scale ( 1 = HARDLY ANY, 2 = ONLY SOME and 3 = A GREAT DEAL). 
-
 ```{r data_cleanup}
 
 confidence <- confidence |>
@@ -74,9 +88,10 @@ inflation <- inflation |>
 
 conf_infl <- confidence |>
   inner_join(inflation, by = "year")
+
 ```
 
-##"Decompose" confed variable
+##Rename the data of the confed variable
 ```{r decompose_confed}
 
 conf_infl <- conf_infl |>
@@ -96,17 +111,6 @@ ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) +
   labs(title = "US Inflation Over Time", x = "Year", y = "Inflation (%)", subtitle = "From 1973 to 2021")
 
 ```
-
-####Table with the count of each confed level over time (by year)
-{r table_count_confed}
-
-confed_count <- conf_infl |>
-  group_by(year, confed_nb) |>
-  summarize(count = n()) |>
-  pivot_wider(names_from = confed_nb , values_from = count)
-
-knitr::kable(confed_count, col.names = c("Year", "Hardly Any", "Only Some", "A Great Deal", "Other"))
-
 
 ## Table with the means of each confed level over time (by year) + graph
 ##Add range for the y axis from 1 to 3
