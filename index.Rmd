@@ -6,13 +6,28 @@ output:
   distill::distill_article:
     self_contained: false
 ---
-##Final report
-Introduction: This data analysis project sought to answer the following question: How does the US population's confidence in the executive branch of the federal government change as the inflation rate change? In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis was based on the fact that high rates of inflation are not desirable
+#Final Report: Introduction
 
+Research Question
+This data analysis project sought to answer the following question: How does the US population's confidence in the executive branch of the federal government change as the inflation rate changes?
 
-In a time where inflation in the United States is above average levels, this research question is matters because it is important to understand the on confidence. Especially because presidential elections are in 2024, the current (2022) inflation crisis will have characterized 
+Hypothesis + Explanation
+In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis makes intuitive sense because of the fact that high rates of inflation are not desirable by the population; and, while the Federal Reserve System's (the Fed) decisions do not need to be approved by the executive branch of the federal government, the Fed still "must work within the framework of the overall objectives of economic and financial policy established by the government." The Fed is therefore often associated to the executive branch of the federal government, even though it is not directly under its control. I also think that the effect of the inflation rate on the confidence in the executive branch of the federal government is small. This makes intuitive sense because I recognize that there are a multitude of other factors that influence confidence such as the very particular historical context and important world events, whose effect on confidence is difficult to quantify. 
 
-introduction where you introduce the research question and hypothesis and briefly describe why it is interesting; 
+Why is this research question interesting?
+This research question is interesting because we are currently in 2022, a time where inflation in the United States is at very high levels, when compared to historical levels. The dataset that I used from the FRED - more on the dataset below - does not include levels of inflation for 2022, but I still believe this research question is important because a government's response (or lack thereof) to inflation could have major consequences on many aspects of society, including confidence, voting patterns, etc. 
+
+##Final Report: Data
+a data section that briefly describes the data source, describes how the key dependent and independent variables are measured (e.g., a survey, statistical model, or expert coding), and also produces a plot that summarizes the dependent variable;
+
+I used two data sources for this project which I ultimately merged together based on year. The first is the General Social Survey (GSS) which gave me my outcome variable, and the second is the "Inflation, consumer prices for the United States" from the FRED which gave me my explanatory variable. The GSS data is from a 
+
+The in
+
+My explanatory variables would be the inflation rate.
+
+My outcome variable is the confidence in the government, which is measured on a scale of 1 to 3.
+
 
 ##Research Question
 How does the population's confidence in the government change as the inflation rate change?
