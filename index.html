@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.16/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["Data/GOV50-FinalProject-Data-GSS-csv-prep.csv","Data/GOV50-FinalProject-Data-GSS-csv-prep.xlsx","Data/GOV50-FinalProject-Data-GSS.xlsx","Data/Inflation-FRED-Jan01.csv","Data/Inflation-FRED-Jan01.xls","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/plotting_inflation-1.png","index_files/figure-html5/regression-1.png","index_files/figure-html5/work_in_progress-1.png","index_files/header-attrs-2.16/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1517,9 +1517,85 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<h2 id="project-thoughts">Project thoughts</h2>
-<p>I am interested in exploring data related to payday loans. Indeed, I would like to look at the number of payday loan businessese in a neighbourhood and a neighbourhood’s wealth. I would ideally like to be able to create a model, where the number of payday loan businesses in a certain area is a predictor for the median income for that neighbourhood.</p>
-<p>This topic is motivated by my walks to work this summer.I would pass by the same 2-3 payday loan businesses everyday and it got me thinking about how low of a median income does a neighbourhood need to have before its residents require payday loans to get by. Expanding this idea further, I could also look into foreign exchange counters, and how they are a predictor of median income, or the immigrant population of an area.</p>
+<h1 id="introduction">Introduction</h1>
+<h4 id="research-question">Research Question</h4>
+<p>This data analysis project sought to answer the following question: How does the US population’s confidence in the executive branch of the federal government change as the inflation rate changes?</p>
+<h4 id="hypothesis">Hypothesis</h4>
+<p>In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis makes intuitive sense because of the fact that high rates of inflation are not desirable by the population; and, while the Federal Reserve System’s (the Fed) decisions do not need to be approved by the executive branch of the federal government, the Fed still “must work within the framework of the overall objectives of economic and financial policy established by the government.” The Fed is therefore often associated to the executive branch of the federal government, even though it is not directly under its control. I also think that the effect of the inflation rate on the confidence in the executive branch of the federal government is small. This makes intuitive sense because I recognize that there are a multitude of other factors that influence confidence such as the very particular historical context and important world events, whose effect on confidence is difficult to quantify.</p>
+<h4 id="relevance">Relevance</h4>
+<p>This research question is interesting and important because we are currently in 2022, a time where inflation in the United States is at very high levels, when compared to historical levels. The dataset that I used from the FRED - more on the dataset below - does not include levels of inflation for 2022, but I still believe this research question is important because a government’s response (or lack thereof) to inflation could have major consequences on many aspects of society, including confidence, voting patterns, etc.</p>
+<h1 id="data-and-research-design">Data and Research Design</h1>
+<p>The research design of this project is cross-sectional.</p>
+<h4 id="description-of-the-data-source">Description of the Data Source</h4>
+<p>I used two data sources for this project which I ultimately merged together using the year. The first is the General Social Survey (GSS) which was the source of my dependent variable. The second is the “Inflation, consumer prices for the United States” from the World Bank, but which I retrieved from the Federal Reserve Economic Data (FRED), which was the source of my independent variable. The GSS is a survey that collects information and keeps a historical record of the concerns, experiences, attitudes, and practices of residents of the United States. The FRED is a public database with macroeconomic indicators maintained by the Research division of the Federal Reserve Bank of St. Louis.</p>
+<h4 id="independent-variable">Independent Variable</h4>
+<p>My independent variable is the inflation rate. In the data downloaded from the FRED, this represents the inflation_cpi variable and it is coded in the following way: 1 percent = 1.00 and 6 percent = 6.00. The data was originally released by World Bank, and as indicated by this international organization, “inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at specified intervals, such as yearly. The Laspeyres formula is generally used.”</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>conf_infl</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>year</span>, y <span class='op'>=</span> <span class='va'>perc_inflation</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"US Inflation Over Time"</span>, x <span class='op'>=</span> <span class='st'>"Year"</span>, y <span class='op'>=</span> <span class='st'>"Inflation (%)"</span>, subtitle <span class='op'>=</span> <span class='st'>"From 1973 to 2021"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/plotting_inflation-1.png" width="624" /></p>
+</div>
+<h4 id="dependent-variable">Dependent Variable</h4>
+<p>My dependent variable is the confidence in the executive branch of the federal government. In the GSS, this represents the confed variable and it is mostly coded as HARDLY ANY, ONLY SOME, and A GREAT DEAL. The data is measured via a survey, the GSS.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>confed_mean_table</span> <span class='op'>&lt;-</span> <span class='va'>conf_infl</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>year</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>confed_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>confed_nb</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'>#knitr::kable(confed_mean_table, col.names = c("Year", "Confidence in Exec Branch of Fed Government"))</span></span>
+<span></span>
+<span><span class='va'>confed_mean_table</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>year</span>, y <span class='op'>=</span> <span class='va'>confed_mean</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Confidence in the Executive Branch of the Federal Government Over Time"</span>, x <span class='op'>=</span> <span class='st'>"Year"</span>, y <span class='op'>=</span> <span class='st'>"Confidence"</span>, subtitle <span class='op'>=</span> <span class='st'>"From 1973 to 2021"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/work_in_progress-1.png" width="624" /></p>
+</div>
+<p>##Results
+Instructions: A results section that contains a scatterplot, barplot, or boxplot of the main relationship of interest and output for the main regression of interest. For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.</p>
+<h2 id="table-with-the-means-of-each-confed-level-over-time-by-year-graph">Table with the means of each confed level over time (by year) + graph</h2>
+<p>##Add range for the y axis from 1 to 3</p>
+<p>Before regressing the confidence outcome variable on the inflation rate, the bivariate relationship between these variables can be visualized with a scatter plot. The graph below plots the inflation on the x-axis, and the confidence in the executive branch of the federal government on the y-axis. The years that are associated with each point are also indicated.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>##Regression of inflation and confidence in the executive branch of the federal government. </span></span>
+<span><span class='va'>confed_infl_mean</span> <span class='op'>&lt;-</span> <span class='va'>conf_infl</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>year</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>confed_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>confed_nb</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, </span>
+<span>            mean_infl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>perc_inflation</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>graph</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>confed_infl_mean</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mean_infl</span>, y <span class='op'>=</span> <span class='va'>confed_mean</span>, label <span class='op'>=</span> <span class='va'>year</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span>check_overlap <span class='op'>=</span> <span class='cn'>TRUE</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, nudge_x <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span>, se <span class='op'>=</span> <span class='cn'>FALSE</span>, color <span class='op'>=</span> <span class='st'>"blue1"</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Inflation (%)"</span>, y <span class='op'>=</span> <span class='st'>"Confidence"</span>, title <span class='op'>=</span> <span class='st'>"Inflation and Confidence in the Executive Branch of the Federal Government"</span>,  subtitle <span class='op'>=</span> <span class='st'>"From 1973 to 2021"</span><span class='op'>)</span></span>
+<span><span class='va'>graph</span></span></code></pre>
+</div>
+<img src="index_files/figure-html5/regression-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>##OLS Regression</span></span>
+<span><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>confed_mean</span> <span class='op'>~</span> <span class='va'>mean_infl</span>, data <span class='op'>=</span> <span class='va'>confed_infl_mean</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>fit_controlyear</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>confed_mean</span> <span class='op'>~</span> <span class='va'>mean_infl</span> <span class='op'>+</span> <span class='va'>year</span>, data <span class='op'>=</span> <span class='va'>confed_infl_mean</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<p>The scatter plot above suggests that there exists a slight positive relationship between the inflation rate and individuals’ confidence in the executive branch of the federal government. Next, regression analyses will offer more detailed information about this seemingly positive association.</p>
+##Regression results
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>##Analysis
+In plotting these two variables, I played around with different types of regression. While I found a slight positive correlation between inflation and confidence in the executive branch of the federal government with a linear regression, I think my data points are best mapped to a quadratic regression, unless I can prove them to be outliers - analyzing these possible outliers is one of my next steps. The above quadratic regression suggests that government confidence rises with inflation, up to about 6% in inflation, and then falls as inflation continues to rise. This does not align with my original hypothesis.</p>
+<p>##Notes to self for later writeup
+An important caveat of my analysis is the fact that the GSS doesn’t have the survey respondents’ state of residence. Due to this, I was forced to aggregate all the survey responses as being data from the United States as a whole; I was not able to take into account regional differences. This could’ve impacted my analysis.</p>
+<p>I also acknowledge that there are differences in inflation rates across the country, but due to lack of geographic in the GSS data, I was not able to take the regional differences in inflation into account. This could’ve impacted my analysis.</p>
+<p>With the prevalent current discussion about inflation, I was interested in looking at how inflation impacted people’s confidence in the government.There are many other variables that impact government confidence.</p>
+<p>Snipets of history that can also explain low government confidence and/or high inflation:</p>
+<p>“The impact of the 1973 oil crisis, reduced U.S. expenditure and the resignation of Richard Nixon in the wake of the Watergate scandal undermined the South Vietnamese economy and U.S. support for South Vietnam.”</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
