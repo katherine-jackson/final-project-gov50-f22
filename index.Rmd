@@ -190,3 +190,5 @@ The fact that GSS's measure for confidence was imprecise - it was on a scale of 
 Another possible improvement could be to adjust the type of regression used. In fact, I think my data points are best mapped to a quadratic regression. This would hold, unless I can prove some of my data to be outliers, at which point they could be removed from the regression model. 
 
 It would also be interesting to plot inflation with the confidence in other governmental institutions, i.e. Congress, Supreme Court, which are available in the same GSS dataset. In other words, I could keep the same explanatory variable, but vary the outcome variables with a similar analysis. 
+
+
