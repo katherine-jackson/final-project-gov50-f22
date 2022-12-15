@@ -1,7 +1,7 @@
 ---
-title: "Gov 50 Final Project"
+title: "Confidence in the Government as It Relates to Inflation"
 author: "Katherine Rafeiro Jackson"
-description: "My final project"
+description: "This data analysis project provides insights on how the inflation rate in the United States affects the population's confidence in the executive branch of the federal government."
 output:
   distill::distill_article:
     self_contained: false
@@ -43,21 +43,27 @@ conf_infl <- conf_infl |>
 This data analysis project sought to answer the following question: How does the US population's confidence in the executive branch of the federal government change as the inflation rate changes?
 
 #### Hypothesis
-In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis makes intuitive sense because of the fact that high rates of inflation are not desirable by the population; and, while the Federal Reserve System's (the Fed) decisions do not need to be approved by the executive branch of the federal government, the Fed still "must work within the framework of the overall objectives of economic and financial policy established by the government." The Fed is therefore often associated to the executive branch of the federal government, even though it is not directly under its control. I also think that the effect of the inflation rate on the confidence in the executive branch of the federal government is small. This makes intuitive sense because I recognize that there are a multitude of other factors that influence confidence such as the very particular historical context and important world events, whose effect on confidence is difficult to quantify. 
+In starting this project, my hypothesis was that as the inflation rate rises, the confidence in the executive branch of the federal government falls. This hypothesis makes intuitive sense because of the fact that high rates of inflation are not desirable by the population. While the Federal Reserve System's (the Fed's), the body in charge of controlling inflation, decisions do not need to be approved by the executive branch of the federal government, the Fed still "must work within the framework of the overall objectives of economic and financial policy established by the government." The Fed is therefore often associated to the executive branch of the federal government, even though it is not directly under its control.
+
+With that being said, I think that the effect of the inflation rate on the confidence in the executive branch of the federal government is small. This makes intuitive sense because I recognize that there are a multitude of other factors that influence confidence such as the very particular historical context and important world events, whose effect on confidence is difficult to quantify. 
 
 #### Relevance
-This research question is interesting and important because we are currently in 2022, a time where inflation in the United States is at very high levels, when compared to historical levels. The dataset that I used from the FRED - more on the dataset below - does not include levels of inflation for 2022, but I still believe this research question is important because a government's response (or lack thereof) to inflation could have major consequences on many aspects of society, including confidence, voting patterns, etc. 
+This research question is interesting and important because we are currently in 2022, a time where inflation in the United States is very high, when compared to historical levels. The dataset that I used from the FRED - more on the dataset below - does not include levels of inflation for 2022, but I still believe this research question is important because a government's response (or lack thereof) to inflation could have major consequences on many aspects of society, for example, voting patterns. 
 
 # Data and Research Design
 The research design of this project is cross-sectional.
 
 #### Description of the Data Source
-I used two data sources for this project which I ultimately merged together using the year. The first is the General Social Survey (GSS) which was the source of my dependent variable. The second is the "Inflation, consumer prices for the United States" from the World Bank, but which I retrieved from the Federal Reserve Economic Data (FRED), which was the source of my independent variable. The GSS is a survey that collects information and keeps a historical record of the concerns, experiences, attitudes, and practices of residents of the United States. The FRED is a public database with macroeconomic indicators maintained by the Research division of the Federal Reserve Bank of St. Louis.
+I used two data sources for this project, which I ultimately merged together using the year.
+
+The first is the General Social Survey (GSS) which was the source of my dependent variable. The GSS is a survey that collects information and keeps a historical record of the concerns, experiences, attitudes, and practices of residents of the United States.
+
+The second is the "Inflation, consumer prices for the United States" from the World Bank, which I retrieved from the Federal Reserve Economic Data (FRED), and which was the source of my independent variable.  The FRED is a public database with macroeconomic indicators maintained by the Research division of the Federal Reserve Bank of St. Louis.
 
 #### Independent Variable
-My independent variable is the inflation rate. In the data downloaded from the FRED, this represents the inflation_cpi variable and it is coded in the following way: 1 percent = 1.00 and 6 percent = 6.00. The data was originally released by World Bank, and as indicated by this international organization, "inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at specified intervals, such as yearly. The Laspeyres formula is generally used."
+My independent variable is the inflation rate. In the data downloaded from the FRED, this represents the "inflation_cpi" variable and it is coded in the following way: 1 percent = 1.00 and 6 percent = 6.00. The data was originally released by World Bank. This international organization used the Laspeyres formula to calculate inflation. 
 
-```{r plotting_inflation}
+```{r inflation, echo=FALSE}
 
 ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) + 
   geom_line() + 
@@ -66,33 +72,29 @@ ggplot(data = conf_infl, mapping = aes(x = year, y = perc_inflation)) +
 ```
 
 #### Dependent Variable
-My dependent variable is the confidence in the executive branch of the federal government. In the GSS, this represents the confed variable and it is mostly coded as HARDLY ANY, ONLY SOME, and A GREAT DEAL. The data is measured via a survey, the GSS. 
+My dependent variable is the confidence in the executive branch of the federal government. In the GSS, this represents the "confed" variable and it is mostly coded as HARDLY ANY, ONLY SOME, and A GREAT DEAL, which I've converted to numeric data for the purposes of this analysis. Indeed, HARDLY ANY is 1, ONLY SOME is 2, and A GREAT DEAL is 3.
 
-``` {r work_in_progress}
+``` {r work_in_progress, echo=FALSE, fig.width = 8}
 
 confed_mean_table <- conf_infl |>
   group_by(year) |>
   summarize(confed_mean = mean(confed_nb, na.rm = TRUE))
-
-#knitr::kable(confed_mean_table, col.names = c("Year", "Confidence in Exec Branch of Fed Government"))
 
 confed_mean_table |>
   ggplot(mapping = aes(x = year, y = confed_mean)) +
   geom_line() + 
   labs(title = "Confidence in the Executive Branch of the Federal Government Over Time", x = "Year", y = "Confidence", subtitle = "From 1973 to 2021")
 
+ggplot(data = confed_mean_table, mapping = aes(x = confed_mean)) + 
+  geom_histogram(binwidth = 0.01, fill = "skyblue3", aes(y=..count../sum(..count..))) + 
+  labs(title = "Confidence in the Executive Branch of the Federal Government Over Time", x = "Confidence in the Executive Branch of the Federal Government", y = "Proportion")
+
 ```
 
-##Results
-Instructions: A results section that contains a scatterplot, barplot, or boxplot of the main relationship of interest and output for the main regression of interest. For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.
-
-
-## Table with the means of each confed level over time (by year) + graph
-##Add range for the y axis from 1 to 3
-
+## Results
 Before regressing the confidence outcome variable on the inflation rate, the bivariate relationship between these variables can be visualized with a scatter plot. The graph below plots the inflation on the x-axis, and the confidence in the executive branch of the federal government on the y-axis. The years that are associated with each point are also indicated.
 
-```{r regression}
+```{r regression, echo=FALSE,  fig.width = 8}
 
 ##Regression of inflation and confidence in the executive branch of the federal government. 
 confed_infl_mean <- conf_infl |> 
@@ -107,33 +109,84 @@ graph <- ggplot(data = confed_infl_mean, mapping = aes(x = mean_infl, y = confed
   labs(x = "Inflation (%)", y = "Confidence", title = "Inflation and Confidence in the Executive Branch of the Federal Government",  subtitle = "From 1973 to 2021")
 graph
 
-##OLS Regression
-fit <- lm(confed_mean ~ mean_infl, data = confed_infl_mean)
-
-fit_controlyear <- lm(confed_mean ~ mean_infl + year, data = confed_infl_mean)
-
 ```
-
 The scatter plot above suggests that there exists a slight positive relationship between the inflation rate and individuals' confidence in the executive branch of the federal government. Next, regression analyses will offer more detailed information about this seemingly positive association.
 
-##Regression results
-```{r}
+#### Regression results
+Results from two regression models are below. The first is a bivariate model, which regresses the confidence on the inflation. The second is a multivariate model, which regresses confidence on inflation and year. 
 
+```{r regressions, echo=FALSE}
+
+mod1 <- lm(confed_mean ~ mean_infl, data = confed_infl_mean)
+
+mod2 <- lm(confed_mean ~ mean_infl + year, data = confed_infl_mean)
+
+var_labels <- c(
+  "mean_infl" = "Mean Inflation", 
+  "year" = "Year"
+)
+
+modelsummary::modelsummary(list(mod1, mod2),
+                           coef_map = var_labels,
+                           gof_map = c("nobs", "r.squared", "adj.r.squared"))
 ```
 
+The bivariate model suggests that on average, a 1 point (1%) increase in inflation is associated with a 0.006 point increase in confidence in the executive branch of the federal government. On the other hand, the multivariate model suggests that on average, a 1 point (1%) increase in inflation is associated with a -0.021 point decrease in confidence in the executive branch of the federal government. 
 
+```{r get_p_value, echo=FALSE, results='hide'}
 
-##Analysis
-In plotting these two variables, I played around with different types of regression. While I found a slight positive correlation between inflation and confidence in the executive branch of the federal government with a linear regression, I think my data points are best mapped to a quadratic regression, unless I can prove them to be outliers - analyzing these possible outliers is one of my next steps. The above quadratic regression suggests that government confidence rises with inflation, up to about 6% in inflation, and then falls as inflation continues to rise. This does not align with my original hypothesis. 
+#Coefficient estimates
+coefest_mod1 <- summary(mod1)$coefficients["mean_infl", "Estimate"]
+coefest_mod2 <- summary(mod2)$coefficients["mean_infl", "Estimate"]
+coefest_mod1 
+coefest_mod2
 
-##Notes to self for later writeup 
-An important caveat of my analysis is the fact that the GSS doesn't have the survey respondents' state of residence. Due to this, I was forced to aggregate all the survey responses as being data from the United States as a whole; I was not able to take into account regional differences. This could've impacted my analysis.
+#P-values
+pvalue_mod1 <- summary(mod1)$coefficients["mean_infl", "Pr(>|t|)"]
+pvalue_mod2 <- summary(mod2)$coefficients["mean_infl", "Pr(>|t|)"]
+pvalue_mod1
+pvalue_mod2
 
-I also acknowledge that there are differences in inflation rates across the country, but due to lack of geographic in the GSS data, I was not able to take the regional differences in inflation into account. This could've impacted my analysis.
+#Standard errors
+coefse_mod1 <- summary(mod1)$coefficients["mean_infl", "Std. Error"]
+coefse_mod2 <- summary(mod2)$coefficients["mean_infl", "Std. Error"]
+coefse_mod1
+coefse_mod2
 
-With the prevalent current discussion about inflation, I was interested in looking at how inflation impacted people's confidence in the government.There are many other variables that impact government confidence.
+#Probabilistic confidence intervals
+ci95_mod1 <- c(
+  coefest_mod1 -1.96*coefse_mod1,
+  coefest_mod1 + 1.96*coefse_mod1)
+ci95_mod1
 
-Snipets of history that can also explain low government confidence and/or high inflation: 
+ci95_mod2 <- c(
+  coefest_mod2 - 1.96*coefse_mod2,
+  coefest_mod2 + 1.96*coefse_mod2)
+ci95_mod2
 
-"The impact of the 1973 oil crisis, reduced U.S. expenditure and the resignation of Richard Nixon in the wake of the Watergate scandal undermined the South Vietnamese economy and U.S. support for South Vietnam."
+```
+In the bivariate model, the association between inflation and the confidence in the executive branch of the federal government is not statistically significant at the test level α=0.05. Specifically, the p-value on the coefficient is 0.5246107. If hypothesizing that the association between inflation and confidence rates is non-zero, then the coefficient’s p-value of 0.52 would suggest there is a 52% probability that the estimated association observed here is as extreme and meaningless as any estimated association from the null distribution.
 
+In the multivariate model, the association between inflation and the confidence in the executive branch of the federal government is statistically significant at the test level α=0.05. Specifically, the p-value on the coefficient is 0.03. If hypothesizing that the association between inflation and confidence rates is non-zero, then the coefficient’s p-value of 0.03 would suggest there is a 3% probability that the estimated association observed here is as extreme and meaningless as any estimated association from the null distribution.
+
+If we assume that the sampling distribution of confidence rates is approximately normal, we can construct a 95% confidence interval. This confidence interval means that if we take many samples, the regression correlation that we estimate between the confidence rate and the inflation rate will be within the interval 95% of the time.
+
+Confidence interval for bivariate model: -0.011 and 0.022. 
+
+Confidence interval for multivariate model:  -0.038 and -0.003. 
+
+The confidence intervals concur with what was discussed above; the bivariate model is not statistically significant (because the confidence interval include 0), but the multivariate model is (because the confidence interval excludes 0). 
+
+#### Causality and Confounders
+Our results could be causal given the fact that the inflation rate is a national macroeconomic statistic. Therefore, inflation can be treated as a "treatment" variable that acts on the population's confidence rates. 
+
+Our multivariate model attempts to control for one possible confounder: the year. Other possible confounders that weren't included in the model but that could be of relevance are race and political affiliation, both of which are also measured by the GSS. 
+
+## Conclusion
+To conclude, the bivariate regression demonstrates that the association between inflation and the confidence in the executive branch of the federal government is slightly positive. However, it is not statistically significant. On the other hand, the multivariate regression - that takes into account the year - demonstrates that this association is negative and statistically significant given its p-value of 0.03 when compared to α=0.05.
+
+The fact that GSS's measure for confidence was imprecise - it was on a scale of 1 (HARDLY ANY) to 3 (A GREAT DEAL) - was a limitation of this analysis. To improve, it would be great to find and use data that has more precise measurement's for an individual's confidence in the executive branch of the federal government. Knowing an individuals state of residence, and the corresponding inflation rate in each state would also allow for a more precise analysis. 
+
+Another possible improvement could be to adjust the type of regression used. In fact, I think my data points are best mapped to a quadratic regression. This would hold, unless I can prove some of my data to be outliers, at which point they could be removed from the regression model. 
+
+It would also be interesting to plot inflation with the confidence in other governmental institutions, i.e. Congress, Supreme Court, which are available in the same GSS dataset. In other words, I could keep the same explanatory variable, but vary the outcome variables with a similar analysis. 
